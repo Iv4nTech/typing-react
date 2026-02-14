@@ -8,11 +8,10 @@ interface PropsInputText {
 
 export const InputText = ({handleText, textSystem}:PropsInputText) => {
   const arrayInputUser:string[] = []; 
-
   let first = true;
 
    const inputRef = useRef<HTMLInputElement>(null);
-   const textSystemRef = useRef<HTMLDivElement>(null);
+
    const checkLetter = (arrayUser:string[], arrayPhrase:string[]) => {
        arrayUser.forEach((lu:string) => {
            arrayPhrase.forEach((lp:string) => {
@@ -26,10 +25,13 @@ export const InputText = ({handleText, textSystem}:PropsInputText) => {
     const handleChange = ():void => {
         if (!inputRef.current) return;
         arrayInputUser.length >= 1  ? arrayInputUser.push(inputRef.current.value[inputRef.current.value.length-1]) : arrayInputUser.push(inputRef.current.value[0])
+        if(textSystem.length < 0) {
+            console.log(arrayInputUser);
+            console.log(textSystem);
+        }
         checkLetter(arrayInputUser, textSystem);
         
         if (first) {
-           console.log('ejecutado')
             inputRef.current.value = "";
             first = false;
        }

@@ -25,7 +25,7 @@ export const TextArea = ({changeInput, handleText}:TextAreaProps) =>{
         if(changeInput) {
             handleText(pharase);
         } 
-    }, [pharase])
+    }, [pharase, changeInput])
     
 
     
