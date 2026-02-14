@@ -1,19 +1,33 @@
 import { phrases } from "../../phrases";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import './TextArea.css';
+import type { JSX } from "react/jsx-runtime";
 
 
 interface TextAreaProps {
     changeInput:boolean;
+    handleText: (text:string[]) => void;
 }
 
-export const TextArea = ({changeInput}:TextAreaProps) =>{
+
+export const TextArea = ({changeInput, handleText}:TextAreaProps) =>{
     
-    function phraseRandom():String[] {
-        const phraseNumber =  Math.floor(Math.random() * phrases.length);
+    const [pharase] = useState<string[]>(() => {
+         const phraseNumber =  Math.floor(Math.random() * phrases.length);
         const phrase = phrases[phraseNumber];
-        return phrase.split('');
-    }
+        const arrayObj = phrase.split('');
+        const stringArray = arrayObj.map(s => s.valueOf());
+        return stringArray;
+    })
+
+
+    useEffect(() => {
+        if(changeInput) {
+            handleText(pharase);
+        } 
+    }, [pharase])
+    
+
     
     const textRef = useRef<HTMLDivElement>(null);
     
@@ -22,7 +36,7 @@ export const TextArea = ({changeInput}:TextAreaProps) =>{
     }
 
     return <div ref={textRef} className="text">
-       { changeInput ? phraseRandom().map((letter, index):JSX.Element => {
+       { changeInput ? pharase.map((letter:string, index:number):JSX.Element => {
             return <span key={index} className="letter">{letter}</span>
        }) : messageStart()}
     </div>
