@@ -6,6 +6,9 @@ export const InputText = () => {
    const inputRef = useRef<HTMLInputElement>(null);
 
    useEffect(() => {
+
+       if (!inputRef.current) return;
+
      
         inputRef.current && inputRef.current.focus()
         window.addEventListener('click', () => {
@@ -14,5 +17,5 @@ export const InputText = () => {
 
    })
    
-    return <input ref={inputRef} type="text"></input>;
+    return <input hidden={true} ref={inputRef} type="text"></input>;
 }

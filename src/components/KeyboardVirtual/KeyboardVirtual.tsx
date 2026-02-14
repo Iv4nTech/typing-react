@@ -4,15 +4,18 @@ import './KeyboardVirtual.css'
 import { useEffect } from "react";
 import { useRef } from "react";
 
+interface PropsKeyboardVirtual {
+    handleChange: (change:boolean) => void;
+}
 
-export const KeyboardVirtual = () => {
+export const KeyboardVirtual = ({handleChange}:PropsKeyboardVirtual) => {
     
     const keyboardRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
 
-        const keypress = (event:Event) => {
-           
+        const keypress = (event:KeyboardEvent) => {
+            handleChange(true);
             if (!keyboardRef.current) return;
             for (const col of keyboardRef.current.children) {
                 for (const row of col.children)
