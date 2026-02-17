@@ -1,0 +1,15 @@
+.text-area {
+    background-color: rgb(27, 27, 27);
+    color: aliceblue;
+    border-radius: 20px;
+    padding: 20px;
+    width: 300px;
+}
+
+.correcto {
+    color: green;
+}
+
+.incorrecto {
+    color: red;
+}

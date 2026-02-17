@@ -11,7 +11,7 @@ export const KeyboardVirtual = () => {
 
     useEffect(() => {
 
-        const keypress = (event:Event) => {
+        const keypress = (event:KeyboardEvent) => {
            
             if (!keyboardRef.current) return;
             for (const col of keyboardRef.current.children) {
