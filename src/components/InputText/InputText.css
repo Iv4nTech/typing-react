@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.text-area {
+  background-color: rgb(44, 44, 44);
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  font-size: 20px;
+}
+
+.correct {
+  color: green;
+}
+
+.incorrect {
+  color: red;
+}
+
+input {
+  opacity: 0;
+}
+
+.number-session {
+  color: yellow;
+  margin-left: 10px;
+}
+
+.info-session {
+  color: white;
+}

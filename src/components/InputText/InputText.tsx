@@ -1,53 +1,104 @@
-import { useEffect } from "react";
-import { useRef } from "react";
+import {
+  ChangeEvent,
+  ReactNode,
+  use,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { phrases } from "../../phrases.ts";
+import "./InputText.css";
+export const InputText = () => {
+  const [lettersInput, setLettersInput] = useState<string[]>([]);
+  const [pharase, setPharase] = useState(
+    phrases[Math.floor(Math.random() * phrases.length)].split(""),
+  );
 
-interface PropsInputText {
-    handleText: (text:string) => void;
-    textSystem:string[];
-}
+  const [session, setSession] = useState(0);
 
-export const InputText = ({handleText, textSystem}:PropsInputText) => {
-  const arrayInputUser:string[] = []; 
-  let first = true;
+  const inputRef = useRef<HTMLInputElement>(null);
 
-   const inputRef = useRef<HTMLInputElement>(null);
+  const handleBlur = () => inputRef.current?.focus();
+  const handleChange = (event: any) => {
+    const lastLetter = event.target.value[event.target.value.length - 1];
+    setLettersInput((prev) => [...prev, lastLetter]);
+  };
 
-   const checkLetter = (arrayUser:string[], arrayPhrase:string[]) => {
-       arrayUser.forEach((lu:string) => {
-           arrayPhrase.forEach((lp:string) => {
-                console.log(lu)
-                console.log(lp)
-                lu == lp ? console.log('Correcto') : console.log('Incorrecto!')
-           });
-       });
-   }
+  const keyMaxSessions = "max_sessions";
+  const saveMaxSessions = (numSessions: number) => {
+    const max_session = localStorage.getItem(keyMaxSessions);
+    (Number(max_session) < numSessions || !max_session) &&
+      localStorage.setItem(keyMaxSessions, numSessions.toString());
+  };
 
-    const handleChange = ():void => {
-        if (!inputRef.current) return;
-        arrayInputUser.length >= 1  ? arrayInputUser.push(inputRef.current.value[inputRef.current.value.length-1]) : arrayInputUser.push(inputRef.current.value[0])
-        if(textSystem.length < 0) {
-            console.log(arrayInputUser);
-            console.log(textSystem);
-        }
-        checkLetter(arrayInputUser, textSystem);
-        
-        if (first) {
-            inputRef.current.value = "";
-            first = false;
-       }
-       
-    }
-    
-   useEffect(() => {
-       if (!inputRef.current) return;
+  useEffect(() => {
+    const loadMexSession = () => {
+      const maxSession = localStorage.getItem(keyMaxSessions);
+      if (!maxSession) return;
+      setSession(Number(maxSession));
+    };
+    loadMexSession();
+  }, []);
 
-        handleText(inputRef.current.value); 
-       
-        inputRef.current && inputRef.current.focus()
-        window.addEventListener('click', () => {
-            inputRef.current?.focus();
-        })
-   })
-   
-    return <input ref={inputRef} onChange={handleChange} type="text"></input>;
-}
+  useEffect(() => {
+    const resetPharase = () => {
+      console.log("Cambio de frase");
+      setPharase(phrases[Math.floor(Math.random() * phrases.length)].split(""));
+      const letters = document.querySelectorAll("span");
+      letters.forEach((letter) => {
+        letter.classList.remove("correct");
+        letter.classList.remove("incorrect");
+      });
+      if (!inputRef.current) return;
+      inputRef.current.value = "";
+      setLettersInput([]);
+      setSession((prev) => {
+        saveMaxSessions(prev + 1);
+        return prev + 1;
+      });
+    };
+
+    const paintLetter = (correct: boolean, index: number) => {
+      const letterDom = document.getElementById(index.toString());
+      correct
+        ? letterDom?.classList.add("correct")
+        : letterDom?.classList.add("incorrect");
+    };
+
+    inputRef.current?.focus();
+    const lastIndex = lettersInput.length - 1;
+
+    pharase[lastIndex] == lettersInput[lastIndex]
+      ? paintLetter(true, lastIndex)
+      : paintLetter(false, lastIndex);
+
+    pharase.length == lettersInput.length &&
+      pharase.length > 0 &&
+      resetPharase();
+  }, [lettersInput]);
+
+  console.log(lettersInput);
+
+  return (
+    <div className="container">
+      <p className="info-session">
+        Sesiones hechas:<span className="number-session">{session}</span>
+      </p>
+      <div className="text-area">
+        {pharase.map((p, index): ReactNode => {
+          return (
+            <span key={index} id={index.toString()}>
+              {p}
+            </span>
+          );
+        })}
+      </div>
+      <input
+        onBlur={handleBlur}
+        onChange={handleChange}
+        ref={inputRef}
+        type="text"
+      />
+    </div>
+  );
+};
