@@ -1,0 +1,73 @@
+.info-user-mini-sidebar {
+  position: fixed;
+  right: 15px;
+  top: 15px;
+  width: 140px; /* Muy estrecha */
+  z-index: 999;
+  font-family: monospace;
+}
+
+.info-user-mini-card {
+  background-color: rgba(0, 0, 0, 0.3); /* Fondo oscuro traslúcido */
+  border: white solid 1px;
+  border-radius: 8px;
+  padding: 8px;
+  backdrop-filter: blur(4px);
+  color: white;
+}
+
+.info-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mini-avatar {
+  width: 28px;
+  height: 28px;
+  background-color: red;
+  border: white solid 1px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.mini-details {
+  overflow: hidden;
+}
+
+.mini-name,
+.mini-surname {
+  margin: 0;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.mini-surname {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.mini-logout-button {
+  width: 100%;
+  background: transparent;
+  border: white solid 1px;
+  color: white;
+  font-size: 9px;
+  padding: 2px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+.mini-logout-button:hover {
+  background: red;
+  border-color: red;
+}

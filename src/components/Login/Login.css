@@ -5,9 +5,9 @@ form {
   max-width: 320px;
   margin: 40px auto;
   padding: 20px;
-  background-color: #1a1a1a; 
+  background-color: #1a1a1a;
   border-radius: 15px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 label {
@@ -68,4 +68,9 @@ button:active {
 .key-pressed {
   background-color: red;
   color: white;
+}
+
+.tittle-form {
+  color: white;
+  text-align: center;
 }

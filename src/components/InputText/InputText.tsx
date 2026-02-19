@@ -3,12 +3,27 @@ import {
   ReactNode,
   use,
   useEffect,
+  useId,
   useRef,
   useState,
 } from "react";
 import { phrases } from "../../phrases.ts";
 import "./InputText.css";
-export const InputText = () => {
+import { userInterface } from "../../types.ts";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../../firebase.ts";
+
+interface propsInputText {
+  userObj: userInterface | undefined;
+}
+
+export const InputText = ({ userObj }: propsInputText) => {
   const [lettersInput, setLettersInput] = useState<string[]>([]);
   const [pharase, setPharase] = useState(
     phrases[Math.floor(Math.random() * phrases.length)].split(""),
@@ -29,15 +44,54 @@ export const InputText = () => {
     const max_session = localStorage.getItem(keyMaxSessions);
     (Number(max_session) < numSessions || !max_session) &&
       localStorage.setItem(keyMaxSessions, numSessions.toString());
+
+    if (Number(max_session) < numSessions || !max_session) {
+      const updateSessionDB = async () => {
+        try {
+          const user = (await getDocs(collection(db, "users"))).docs.find(
+            (u) =>
+              u.data().name == userObj?.name &&
+              u.data().surname == userObj?.surname,
+          );
+
+          if (!user) {
+            return;
+          }
+
+          const userID = user.id;
+
+          const pointUser = doc(db, "users", userID);
+
+          await updateDoc(pointUser, {
+            sessionsMax: max_session,
+          });
+
+          console.log("Update session max user");
+        } catch (error) {
+          console.log("Error: Update to session to db failed");
+        }
+      };
+      updateSessionDB();
+    }
   };
 
   useEffect(() => {
-    const loadMexSession = () => {
-      const maxSession = localStorage.getItem(keyMaxSessions);
-      if (!maxSession) return;
-      setSession(Number(maxSession));
+    const loadMaxSession = async () => {
+      try {
+        const user = (await getDocs(collection(db, "users"))).docs.find(
+          (u) =>
+            u.data().name == userObj?.name &&
+            u.data().surname == userObj?.surname,
+        );
+
+        setSession(Number(user?.data().sessionsMax));
+
+        console.log("Load count sessions user");
+      } catch (error) {
+        console.log("Error: Load to count session to db failed");
+      }
     };
-    loadMexSession();
+    loadMaxSession();
   }, []);
 
   useEffect(() => {

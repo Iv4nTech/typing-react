@@ -1,10 +1,10 @@
-type player = 'noob' | 'pro' | 'ninja'
+type player = "noob" | "pro" | "ninja";
 
 export interface userInterface {
-    id:string,
-    name:string,
-    apellidos:string,
-    edad:number,
-    sessions_max:number,
-    typePlayer: player,
+  id: string;
+  name: string;
+  surname: string;
+  age: number;
+  sessions_max: number;
+  typePlayer: player;
 }

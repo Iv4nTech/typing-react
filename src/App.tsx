@@ -1,41 +1,42 @@
-import { KeyboardVirtual } from "./components/KeyboardVirtual/KeyboardVirtual"
-import { InputText } from "./components/InputText/InputText"
-import { Login } from "./components/Login/Login"
-import './App.css'
+import { KeyboardVirtual } from "./components/KeyboardVirtual/KeyboardVirtual";
+import { InputText } from "./components/InputText/InputText";
+import { Login } from "./components/Login/Login";
+import "./App.css";
 import { collection, getDocs, addDoc, doc } from "firebase/firestore";
 import { db } from "./firebase";
-import type { userInterface } from "./types"
-import { useEffect, useState } from "react";
+import type { userInterface } from "./types";
+import { use, useEffect, useState } from "react";
+import { InfoUser } from "./components/InfoUser/InfoUser";
 
 function App() {
-    
-    const [user, setUser] = useState<userInterface>();
+  const [isLogin, setLogin] = useState(false);
+  const [isUser, setUser] = useState<userInterface>();
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const dataFirebase = await getDocs(collection(db, "users"))
-  
-           const dataObj = dataFirebase.docs.map((doc) => {
-            console.log(doc.data());
-          })
-        } catch (error) {
-          console.log('Error to load data' + error);
-        }
-      }
+  const loginSuccess = (user: userInterface) => {
+    setLogin(true);
+    setUser(user);
+  };
 
-      fetchData();
+  const logout = () => {
+    setLogin(false);
+    setUser(undefined);
+  };
 
-    }, [])
-
-    return <>
-    <div>
-      { user &&  <p>{user.name}</p>}
-      <Login />
-    </div>
+  return (
+    <>
+      {!isLogin ? (
+        <div>
+          <Login checkLogin={loginSuccess} />
+        </div>
+      ) : (
+        <div>
+          <InfoUser userObj={isUser} onLogout={logout} />
+          <InputText userObj={isUser} />
+          <KeyboardVirtual />
+        </div>
+      )}
     </>
-
-
+  );
 }
 
-export default App
+export default App;
