@@ -1,5 +1,14 @@
 import { userInterface } from "../../types";
 import "./InfoUser.css";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../../firebase";
 
 interface propsInfoUser {
   userObj: userInterface | undefined;
@@ -7,6 +16,38 @@ interface propsInfoUser {
 }
 
 export const InfoUser = ({ userObj, onLogout }: propsInfoUser) => {
+  const getIDUser = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as userInterface[];
+
+      const { id } = data.find(
+        (u) => u.name == userObj?.name && u.surname == userObj?.surname,
+      );
+      deleteAccount(id);
+    } catch (error) {
+      console.error("No get id user!");
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    getIDUser();
+  };
+
+  const deleteAccount = async (id: string) => {
+    try {
+      if (!id) return;
+      await deleteDoc(doc(db, "users", id));
+      onLogout();
+      console.log("Account delete correct to firebase!");
+    } catch (error) {
+      console.error("Failed to delete user to firebase!" + error);
+    }
+  };
+
   if (!userObj) return null;
   const initial = userObj.name ? userObj.name.charAt(0).toUpperCase() : "?";
 
@@ -22,7 +63,10 @@ export const InfoUser = ({ userObj, onLogout }: propsInfoUser) => {
         </div>
 
         <button className="mini-logout-button" onClick={onLogout}>
-          EXIT
+          Cerrar sesión
+        </button>
+        <button className="mini-logout-button" onClick={handleDeleteAccount}>
+          Delete account
         </button>
       </div>
     </aside>

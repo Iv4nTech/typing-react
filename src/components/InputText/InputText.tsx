@@ -39,40 +39,33 @@ export const InputText = ({ userObj }: propsInputText) => {
     setLettersInput((prev) => [...prev, lastLetter]);
   };
 
-  const keyMaxSessions = "max_sessions";
   const saveMaxSessions = (numSessions: number) => {
-    const max_session = localStorage.getItem(keyMaxSessions);
-    (Number(max_session) < numSessions || !max_session) &&
-      localStorage.setItem(keyMaxSessions, numSessions.toString());
+    const updateSessionDB = async () => {
+      try {
+        const user = (await getDocs(collection(db, "users"))).docs.find(
+          (u) =>
+            u.data().name == userObj?.name &&
+            u.data().surname == userObj?.surname,
+        );
 
-    if (Number(max_session) < numSessions || !max_session) {
-      const updateSessionDB = async () => {
-        try {
-          const user = (await getDocs(collection(db, "users"))).docs.find(
-            (u) =>
-              u.data().name == userObj?.name &&
-              u.data().surname == userObj?.surname,
-          );
-
-          if (!user) {
-            return;
-          }
-
-          const userID = user.id;
-
-          const pointUser = doc(db, "users", userID);
-
-          await updateDoc(pointUser, {
-            sessionsMax: max_session,
-          });
-
-          console.log("Update session max user");
-        } catch (error) {
-          console.log("Error: Update to session to db failed");
+        if (!user) {
+          return;
         }
-      };
-      updateSessionDB();
-    }
+
+        const userID = user.id;
+
+        const pointUser = doc(db, "users", userID);
+
+        await updateDoc(pointUser, {
+          sessions_max: numSessions,
+        });
+
+        console.log("Update session max user");
+      } catch (error) {
+        console.log("Error: Update to session to db failed");
+      }
+    };
+    updateSessionDB();
   };
 
   useEffect(() => {
@@ -84,7 +77,7 @@ export const InputText = ({ userObj }: propsInputText) => {
             u.data().surname == userObj?.surname,
         );
 
-        setSession(Number(user?.data().sessionsMax));
+        setSession(Number(user?.data().sessions_max));
 
         console.log("Load count sessions user");
       } catch (error) {
@@ -96,7 +89,7 @@ export const InputText = ({ userObj }: propsInputText) => {
 
   useEffect(() => {
     const resetPharase = () => {
-      console.log("Cambio de frase");
+      console.log("Change pharase");
       setPharase(phrases[Math.floor(Math.random() * phrases.length)].split(""));
       const letters = document.querySelectorAll("span");
       letters.forEach((letter) => {
@@ -107,7 +100,7 @@ export const InputText = ({ userObj }: propsInputText) => {
       inputRef.current.value = "";
       setLettersInput([]);
       setSession((prev) => {
-        saveMaxSessions(prev + 1);
+        saveMaxSessions(prev + 1 || 0 + 1);
         return prev + 1;
       });
     };
@@ -136,7 +129,8 @@ export const InputText = ({ userObj }: propsInputText) => {
   return (
     <div className="container">
       <p className="info-session">
-        Sesiones hechas:<span className="number-session">{session}</span>
+        Sesiones hechas:
+        <span className="number-session">{session ? session : 0}</span>
       </p>
       <div className="text-area">
         {pharase.map((p, index): ReactNode => {

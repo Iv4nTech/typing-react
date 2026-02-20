@@ -15,10 +15,20 @@ function App() {
   const loginSuccess = (user: userInterface) => {
     setLogin(true);
     setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
   };
+
+  useEffect(() => {
+    const data = localStorage.getItem("user");
+    if (!data) return;
+    const dataParse = JSON.parse(data);
+    setUser(dataParse);
+    setLogin(true);
+  }, []);
 
   const logout = () => {
     setLogin(false);
+    localStorage.removeItem("user");
     setUser(undefined);
   };
 
