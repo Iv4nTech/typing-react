@@ -1,13 +1,6 @@
-import { userInterface } from "../../types";
+import type { userInterface } from "../../types";
 import "./InfoUser.css";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { collection, doc, getDocs, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
 interface propsInfoUser {
@@ -24,10 +17,12 @@ export const InfoUser = ({ userObj, onLogout }: propsInfoUser) => {
         ...doc.data(),
       })) as userInterface[];
 
-      const { id } = data.find(
+      const user = data.find(
         (u) => u.name == userObj?.name && u.surname == userObj?.surname,
       );
-      deleteAccount(id);
+      if (user) {
+        deleteAccount(user.id);
+      }
     } catch (error) {
       console.error("No get id user!");
     }

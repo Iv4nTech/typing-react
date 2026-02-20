@@ -1,17 +1,14 @@
 import {
-  ChangeEvent,
-  ReactNode,
-  use,
+  type ChangeEvent,
+  type ReactNode,
   useEffect,
-  useId,
   useRef,
   useState,
 } from "react";
 import { phrases } from "../../phrases.ts";
 import "./InputText.css";
-import { userInterface } from "../../types.ts";
+import type { userInterface } from "../../types.ts";
 import {
-  addDoc,
   collection,
   doc,
   getDocs,
@@ -34,7 +31,7 @@ export const InputText = ({ userObj }: propsInputText) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleBlur = () => inputRef.current?.focus();
-  const handleChange = (event: any) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const lastLetter = event.target.value[event.target.value.length - 1];
     setLettersInput((prev) => [...prev, lastLetter]);
   };

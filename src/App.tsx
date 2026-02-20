@@ -2,10 +2,8 @@ import { KeyboardVirtual } from "./components/KeyboardVirtual/KeyboardVirtual";
 import { InputText } from "./components/InputText/InputText";
 import { Login } from "./components/Login/Login";
 import "./App.css";
-import { collection, getDocs, addDoc, doc } from "firebase/firestore";
-import { db } from "./firebase";
 import type { userInterface } from "./types";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { InfoUser } from "./components/InfoUser/InfoUser";
 
 function App() {

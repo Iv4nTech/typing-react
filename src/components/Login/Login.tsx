@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import "./Login.css";
 import { useState } from "react";
-import { userInterface } from "../../types";
+import type { userInterface } from "../../types";
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import type { player } from "../../types";
@@ -11,9 +11,7 @@ interface propsLogin {
 }
 
 export const Login = ({ checkLogin }: propsLogin) => {
-  const [user, setUser] = useState<userInterface>();
   const [isLogin, setLogin] = useState(true);
-  const [isRegister, setRegister] = useState(false);
 
   const inputNameRef = useRef<HTMLInputElement>(null);
   const inputSurnameRef = useRef<HTMLInputElement>(null);
@@ -63,11 +61,7 @@ export const Login = ({ checkLogin }: propsLogin) => {
         } else {
           registerFirebase(objUser);
           console.log("Data send firebase correct!");
-          setRegister(true);
           setLogin(true);
-          setTimeout(() => {
-            setRegister(false);
-          }, 5000);
         }
       } catch (error) {
         console.log("Error: Get failed to firebase user");
@@ -78,7 +72,7 @@ export const Login = ({ checkLogin }: propsLogin) => {
     const registerFirebase = async (newItem: userInterface) => {
       const { id, ...dataToSave } = newItem;
       try {
-        const docRef = await addDoc(collection(db, "users"), dataToSave);
+        await addDoc(collection(db, "users"), dataToSave);
       } catch (error) {
         console.log("Fail to send data to firebase" + error);
       }
